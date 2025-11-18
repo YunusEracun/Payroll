@@ -6,6 +6,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import com.example.payroll.OrderRepository;
 import com.example.payroll.Status;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
@@ -28,6 +29,8 @@ class OrderController {
     }
 
     @GetMapping("/orders")
+    @Operation(summary = "Tüm siparişleri listeler", description = "Veri tabanındaki tüm siparişleri listeler")
+
     CollectionModel<EntityModel<Order>> all() {
 
         List<EntityModel<Order>> orders = orderRepository.findAll().stream() //
@@ -39,6 +42,8 @@ class OrderController {
     }
 
     @GetMapping("/orders/{id}")
+    @Operation(summary = "Bir Siparişi getirir", description = "Id'sini girdiğiniz siparişi getirir.")
+
     EntityModel<Order> one(@PathVariable Long id) {
 
         Order order = orderRepository.findById(id) //
@@ -48,6 +53,8 @@ class OrderController {
     }
 
     @PostMapping("/orders")
+    @Operation(summary = "Yeni sipariş", description = "Sisteme yeni bir sipariş ekler.")
+
     ResponseEntity<EntityModel<Order>> newOrder(@RequestBody Order order) {
 
         order.setStatus(Status.IN_PROGRESS);
@@ -58,6 +65,8 @@ class OrderController {
                 .body(assembler.toModel(newOrder));
     }
     @DeleteMapping("/orders/{id}/cancel")
+    @Operation(summary = "Siparişi iptal eder", description = "id'sini girdiğiniz siparişi iptal eder.")
+
     ResponseEntity<?> cancel(@PathVariable Long id) {
 
         Order order = orderRepository.findById(id) //
@@ -76,6 +85,8 @@ class OrderController {
                         .withDetail("You can't cancel an order that is in the " + order.getStatus() + " status"));
     }
     @PutMapping("/orders/{id}/complete")
+    @Operation(summary = "Siparişin tamamlanır", description = "girdiğiniz id'deki sipariş tamamlanır.")
+
     ResponseEntity<?> complete(@PathVariable Long id) {
 
         Order order = orderRepository.findById(id) //

@@ -3,6 +3,8 @@ package com.example.payroll;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import com.example.payroll.EmployeeRepository;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Çalışan Yönetimi", description = "Çalışanları ekleme, silme ve listeleme işlemleri")
 public class EmployeeController {
     private final EmployeeRepository repository;
     private final EmployeeModelAssembler assembler;
@@ -29,6 +32,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
+    @Operation(summary = "Tüm çalışanları getirir", description = "Veritabanındaki kayıtlı aktif tüm personeli listeler.")
     CollectionModel<EntityModel<Employee>> all() {
 
         List<EntityModel<Employee>> employees = repository.findAll().stream() //
@@ -39,6 +43,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
+    @Operation(summary = "Yeni çalışan kaydeder", description = "Sisteme yeni bir personel ekler.")
     ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee) {
 
         EntityModel<Employee> entityModel = assembler.toModel(repository.save(newEmployee));
@@ -49,6 +54,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{id}")
+    @Operation(summary = "Bir çalışanı getirir", description = "id'sini girdiğiniz çalışanı getirir")
     EntityModel<Employee> one(@PathVariable Long id) {
 
         Employee employee = repository.findById(id) //
@@ -58,6 +64,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/employees/{id}")
+    @Operation(summary = "Mevcut çalışan bilgisi güncelleme", description = "girilen id'ye sahip çalışan bilgilerini günceller.")
     ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
 
         Employee updatedEmployee = repository.findById(id) //
@@ -78,6 +85,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employees/{id}")
+    @Operation(summary = "Bir Çalışanı Siler", description = "id'sini girdiğiniz bir çalışanı siler.")
     ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
 
         repository.deleteById(id);
